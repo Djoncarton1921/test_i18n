@@ -48,7 +48,7 @@ function compareFilesInDirectory(directory, referenceFiles) {
       if (!referenceFilePath) {
         return null; // Skip files that don't exist in the reference directory
       }
-      const referenceFile = require(referenceFilePath).default;
+      const referenceFile = require(`./${referenceFilePath}`).default;
       const file = require(`./${filePath}`).default;
       return { file, referenceFile };
     }
