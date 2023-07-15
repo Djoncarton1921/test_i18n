@@ -10,13 +10,15 @@ function compareKeys(files) {
   const keys = {};
 
   files.forEach((file, index) => {
-    const fileKeys = Object.keys(file);
+    const fileName = path.basename(file.filePath);
+    const fileKeys = Object.keys(file.content);
 
     fileKeys.forEach((key) => {
-      if (!keys[key]) {
-        keys[key] = [index];
+      const fullKey = `${fileName}:${key}`;
+      if (!keys[fullKey]) {
+        keys[fullKey] = [index];
       } else {
-        keys[key].push(index);
+        keys[fullKey].push(index);
       }
     });
   });
@@ -35,17 +37,24 @@ function getFilePaths(directory) {
 }
 
 function compareFilesInDirectory(directory) {
-  const filePaths = getFilePaths(directory);
+  const fileNames = fs.readdirSync(directory);
+  const files = [];
 
-  const files = filePaths.map((filePath) => {
+  fileNames.forEach((fileName) => {
+    const filePath = path.join(directory, fileName);
     if (fs.statSync(filePath).isDirectory()) {
-      return compareFilesInDirectory(filePath);
+      const subDirFiles = compareFilesInDirectory(filePath);
+      files.push(...subDirFiles);
     } else {
-      return require(`./${filePath}`).default;
+      const file = {
+        filePath: filePath,
+        content: require(filePath).default
+      };
+      files.push(file);
     }
   });
 
-  return files.flat();
+  return files;
 }
 
 const baseDirectory = "./src/i18n";
@@ -63,9 +72,7 @@ const processDirectory = (directory) => {
 
       if (differingKeys !== true) {
         differingFiles.push(subDir);
-        console.log(
-          `Differences in directory ${subDir}. Keys: ${differingKeys}`
-        );
+        console.log(`Differences in directory ${subDir}. Keys: ${differingKeys.join(', ')}`);
       }
 
       processDirectory(subDir);
