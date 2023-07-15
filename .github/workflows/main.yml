@@ -36,8 +36,8 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add .
-          git commit -am "dfffffffffffffffffffff"
+          git commit -am "dfdffdfdfd"
+          git tag ${{ steps.semantic_release_info.outputs.git_tag }}
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
         with:
