@@ -38,8 +38,4 @@ jobs:
           git config --local user.name "GitHub Action"
           git add .
           git commit -am "created locales"
-      - name: Push changes
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          branch: main
-          github_token: ${{ secrets.AUTH_TOKEN }}
+          git push origin main
