@@ -1,8 +1,9 @@
 require = require("esm")(module);
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 function compareKeys(files) {
+  console.log(files);
   if (files.length < 2) {
     throw new Error("At least two files are required for comparison");
   }
@@ -28,31 +29,30 @@ function compareKeys(files) {
   return differingKeys.length === 0 ? true : differingKeys.map(([key]) => key);
 }
 
-const directoryPath = './src/i18n/ua';
+const directoryPath = "./src/i18n/ua";
 const filesToCompare = [];
 
 // Read files from the 'ua' directory
 fs.readdirSync(directoryPath).forEach((file) => {
-  if (file.endsWith('.js')) {
+  if (file.endsWith(".js")) {
     const filePath = path.join(directoryPath, file);
     const fileContent = require(`./${filePath}`).default; // Assuming the files are valid JavaScript modules exporting objects
     filesToCompare.push(fileContent);
   }
 });
 
-const otherDirectories = ['en', 'fr'];
+const otherDirectories = ["en", "fr"];
 
 // Compare files in other directories
 otherDirectories.forEach((dir) => {
-  const otherDirectoryPath = path.join('./src/i18n', dir);
+  const otherDirectoryPath = path.join("./src/i18n", dir);
 
   fs.readdirSync(otherDirectoryPath).forEach((file) => {
-    if (file.endsWith('.js')) {
+    if (file.endsWith(".js")) {
       const filePath = path.join(otherDirectoryPath, file);
       const fileContent = require(`./${filePath}`).default;
-      console.log(filesToCompare)
-      const differingKeys = compareKeys([filesToCompare[0], fileContent]);
-      
+      const differingKeys = compareKeys([...filesToCompare, fileContent]);
+
       console.log(`Differing keys in ${file}:`, differingKeys);
     }
   });
