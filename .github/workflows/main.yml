@@ -19,13 +19,14 @@ jobs:
             mkdir -p src/i18n/$lang
             for file in src/i18n/ua/*.js; do
               filename=$(basename "$file")
+              echo $filename
               base64_text=$(base64 -w 0 "$file")
-              echo $lang
               translated_text=$(curl -s -X POST \
                 -H "Content-Type: application/json" \
                 -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
                 -d '[
                   {
+                    "from": "ua",
                     "text": "'"$base64_text"'",
                     "to": "'"$lang"'"
                   }
