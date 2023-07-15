@@ -11,7 +11,7 @@ jobs:
       - name: Retrieve Subfolders
         id: subfolders
         run: |
-          SUBFOLDERS=$(find src/i18n -type d)
+          SUBFOLDERS=$(find src/i18n -type d -print0 | xargs -0)
           echo "::set-output name=subfolders::$SUBFOLDERS"
           echo "$SUBFOLDERS"
 
