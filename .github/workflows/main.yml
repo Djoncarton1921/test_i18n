@@ -20,17 +20,15 @@ jobs:
             for file in src/i18n/ua/*.js; do
               filename=$(basename "$file")
               file_content=$(cat "$file")
-              translated_text=$(curl -s -X POST "https://api.cognitive.microsofttranslator.com/" \
-                -H "Content-Type: application/json" \
-                -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
-                -d "[
-                  {
-                    \"from\": \"ua\",
-                    \"text\": \"$file_content\",
-                    \"to\": \"$lang\"
-                  }
-                ]" \
-                | jq -r '.[0].translations[0].text')
-              echo "$translated_text" > "src/i18n/$lang/$filename"
+              echo curl -s -X POST "https://api.cognitive.microsofttranslator.com/" \
+              -H "Content-Type: application/json" \
+              -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
+              -d "[
+                {
+                  \"from\": \"ua\",
+                  \"text\": \"$file_content\",
+                  \"to\": \"$lang\"
+                }
+              ]"
             done
           done
