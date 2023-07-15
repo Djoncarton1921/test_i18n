@@ -34,7 +34,7 @@ const filesToCompare = [];
 fs.readdirSync(directoryPath).forEach((file) => {
   if (file.endsWith('.js')) {
     const filePath = path.join(directoryPath, file);
-    const fileContent = require(filePath); // Assuming the files are valid JavaScript modules exporting objects
+    const fileContent = require(`./${filePath}`); // Assuming the files are valid JavaScript modules exporting objects
     filesToCompare.push(fileContent);
   }
 });
@@ -48,7 +48,7 @@ otherDirectories.forEach((dir) => {
   fs.readdirSync(otherDirectoryPath).forEach((file) => {
     if (file.endsWith('.js')) {
       const filePath = path.join(otherDirectoryPath, file);
-      const fileContent = require(filePath);
+      const fileContent = require(`./${filePath}`);
       console.log(filesToCompare)
       const differingKeys = compareKeys([filesToCompare[0], fileContent]);
       
