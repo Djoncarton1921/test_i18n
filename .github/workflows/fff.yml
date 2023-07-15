@@ -14,8 +14,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Convert JS to JSON
-        run: |
-          find ./src/i18n -type f -name "*.js" -exec sh -c 'node -e "const data = require(\\\'{}\'); const fs = require(\\\'fs\\\'); fs.writeFileSync(\\\'{}\\\'.replace(/\\.js$/, \\\'.json\\\'), JSON.stringify(data, null, 2));"' {} \;
+        run: find ./src/i18n -type f -name "*.js" | xargs -I {} sh -c 'node -e "const data = require(\'{}\'); const fs = require(\'fs\'); fs.writeFileSync(\'{}.json\', JSON.stringify(data, null, 2));"'
 
       - name: Commit changes
         run: |
