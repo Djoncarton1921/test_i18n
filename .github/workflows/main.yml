@@ -16,14 +16,21 @@ jobs:
         id: translate
         run: |
           for lang in ${{ steps.read-languages.outputs.languages }}; do
-            curl -X POST \
-              -H "Content-Type: application/json" \
-              -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
-              -d '[
-                {
-                  "text": "Enter the text you want to translate here",
-                  "to": "'"$lang"'"
-                }
-              ]' \
-              "https://api.cognitive.microsofttranslator.com/"
+            mkdir -p src/i18n/$lang
+            for file in src/i18n/ua/*.js; do
+              filename=$(basename "$file")
+              text=$(cat "$file")
+              translated_text=$(curl -s -X POST \
+                -H "Content-Type: application/json" \
+                -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
+                -d '[
+                  {
+                    "text": "'"${text//\"/\\\"}"'",
+                    "to": "'"$lang"'"
+                  }
+                ]' \
+                "https://api.cognitive.microsofttranslator.com/" \
+                | jq -r '.[0].translations[0].text')
+              echo "$translated_text" > "src/i18n/$lang/$filename"
+            done
           done
