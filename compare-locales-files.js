@@ -41,6 +41,7 @@ function compareFilesInDirectory(directory) {
       if (fs.statSync(filePath).isDirectory()) {
         return compareFilesInDirectory(filePath);
       } else {
+        console.log(filePath)
         return require(filePath).default;
       }
     })
