@@ -11,9 +11,9 @@ jobs:
       - name: Retrieve Subfolders
         id: subfolders
         run: |
-          SUBFOLDERS=$(find src/i18n -mindepth 1 -maxdepth 1 -type d)
+          SUBFOLDERS=$(find src/i18n -type d)
           echo "::set-output name=subfolders::$SUBFOLDERS"
-          echo $SUBFOLDERS
+          echo "$SUBFOLDERS"
 
       - name: DeepL Translate Github Action
         id: translate
