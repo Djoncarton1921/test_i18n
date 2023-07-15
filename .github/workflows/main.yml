@@ -20,7 +20,7 @@ jobs:
             for file in src/i18n/ua/*.js; do
               filename=$(basename "$file")
               file_content=$(cat "$file")
-              echo curl -s -X POST "https://api.cognitive.microsofttranslator.com/" \
+              translated_text=$(curl -s -X POST "https://api.cognitive.microsofttranslator.com/" \
               -H "Content-Type: application/json" \
               -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
               -d "[
@@ -29,6 +29,7 @@ jobs:
                   \"to\": \"$lang\"
                   \"text\": \"$file_content\",
                 }
-              ]"
+              ]")
+              echo $translated_text
             done
           done
