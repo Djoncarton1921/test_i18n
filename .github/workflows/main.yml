@@ -12,12 +12,12 @@ jobs:
         id: read-languages
         run: |
           echo "::set-output name=languages::$(cat locales-list.txt)"
-      - name: DeepL Translate Github Action
+      - name: Microsoft Translator Translate Github Action
         id: translate
-        uses: lyqht/deepl-translate-github-action@v2.0.0
+        uses: azure/microsoft-cognitive-services-translate@v3
         with:
           target_languages: ${{ steps.read-languages.outputs.languages }}
           input_file_path: src/i18n/ua/chat.js
           output_file_name_prefix: src/i18n/
           output_file_extension: ".js"
-          deepl_api_key: ${{ secrets.DEEPL_API_KEY }}
+          translator_key: a32cf006d7184a00bb73f23b5a9d154a
