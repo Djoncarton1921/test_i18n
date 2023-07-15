@@ -20,4 +20,4 @@ jobs:
         run: npm install esm
 
       - name: Compare locales files
-        run: compare-locales-files.js
+        run: node compare-locales-files.js
