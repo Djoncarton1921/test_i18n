@@ -45,7 +45,7 @@ function compareFilesInDirectory(directory) {
     }
   });
 
-  return compareKeys(files.flat());
+  return files.flat();
 }
 
 const baseDirectory = "./src/i18n";
@@ -58,13 +58,16 @@ const processDirectory = (directory) => {
 
   directories.forEach((subDir) => {
     if (fs.statSync(subDir).isDirectory()) {
-      const differingKeys = compareFilesInDirectory(subDir);
+      const files = compareFilesInDirectory(subDir);
+      const differingKeys = compareKeys(files);
+      
       if (differingKeys !== true) {
         differingFiles.push(subDir);
         console.log(
           `Differences in directory ${subDir}. Keys: ${differingKeys}`
         );
       }
+      
       processDirectory(subDir);
     }
   });
