@@ -3,30 +3,35 @@ const fs = require("fs");
 const path = require("path");
 
 function compareKeys(files) {
-  console.log(files);
-  if (files.length < 2) {
-    throw new Error("At least two files are required for comparison");
-  }
+  try {
+    if (files.length < 2) {
+      throw new Error("At least two files are required for comparison");
+    }
 
-  const keys = {};
+    const keys = {};
 
-  files.forEach((file, index) => {
-    const fileKeys = Object.keys(file);
+    files.forEach((file, index) => {
+      const fileKeys = Object.keys(file);
 
-    fileKeys.forEach((key) => {
-      if (!keys[key]) {
-        keys[key] = [index];
-      } else {
-        keys[key].push(index);
-      }
+      fileKeys.forEach((key) => {
+        if (!keys[key]) {
+          keys[key] = [index];
+        } else {
+          keys[key].push(index);
+        }
+      });
     });
-  });
 
-  const differingKeys = Object.entries(keys).filter(([key, indexes]) => {
-    return indexes.length !== files.length;
-  });
+    const differingKeys = Object.entries(keys).filter(([key, indexes]) => {
+      return indexes.length !== files.length;
+    });
 
-  return differingKeys.length === 0 ? true : differingKeys.map(([key]) => key);
+    return differingKeys.length === 0
+      ? true
+      : differingKeys.map(([key]) => key);
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 function getFilePaths(directory) {
@@ -56,8 +61,6 @@ const processDirectory = (directory) => {
   const directories = fs
     .readdirSync(directory)
     .map((subDir) => path.join(directory, subDir));
-
-  console.log(directories);
 
   directories.forEach((subDir) => {
     if (fs.statSync(subDir).isDirectory()) {
