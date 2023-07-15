@@ -15,4 +15,4 @@ jobs:
           echo "::set-output name=subfolders::$SUBFOLDERS"
 
       - name: DeepL Translate Github Action
-        run: echo ${{ steps.subfolders.outputs.subfolders }}
+        run: echo ${{ join(steps.subfolders.outputs.subfolders, ',') }}
