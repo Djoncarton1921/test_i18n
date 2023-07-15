@@ -10,15 +10,13 @@ function compareKeys(files) {
   const keys = {};
 
   files.forEach((file, index) => {
-    const fileName = path.basename(file.filePath);
-    const fileKeys = Object.keys(file.content);
+    const fileKeys = Object.keys(file);
 
     fileKeys.forEach((key) => {
-      const fullKey = `${fileName}:${key}`;
-      if (!keys[fullKey]) {
-        keys[fullKey] = [index];
+      if (!keys[key]) {
+        keys[key] = [index];
       } else {
-        keys[fullKey].push(index);
+        keys[key].push(index);
       }
     });
   });
@@ -36,51 +34,58 @@ function getFilePaths(directory) {
   return fileNames.map((fileName) => path.join(directory, fileName));
 }
 
-function compareFilesInDirectory(directory) {
-  const fileNames = fs.readdirSync(directory);
-  const files = [];
+function compareFilesInDirectory(directory, referenceFiles) {
+  const filePaths = getFilePaths(directory);
 
-  fileNames.forEach((fileName) => {
-    const filePath = path.join(directory, fileName);
+  const files = filePaths.map((filePath) => {
     if (fs.statSync(filePath).isDirectory()) {
-      const subDirFiles = compareFilesInDirectory(filePath);
-      files.push(...subDirFiles);
+      return compareFilesInDirectory(filePath, referenceFiles);
     } else {
-      const file = {
-        filePath: filePath,
-        content: require(`./${filePath}`).default
-      };
-      files.push(file);
+      const fileName = path.basename(filePath);
+      const referenceFilePath = referenceFiles.find(
+        (file) => path.basename(file) === fileName
+      );
+      if (!referenceFilePath) {
+        return null; // Skip files that don't exist in the reference directory
+      }
+      const referenceFile = require(referenceFilePath).default;
+      const file = require(`./${filePath}`).default;
+      return { file, referenceFile };
     }
   });
 
-  return files;
+  return files.filter(Boolean).flat();
 }
 
 const baseDirectory = "./src/i18n";
 const differingFiles = [];
 
-const processDirectory = (directory) => {
+const processDirectory = (directory, referenceFiles) => {
   const directories = fs
     .readdirSync(directory)
     .map((subDir) => path.join(directory, subDir));
 
   directories.forEach((subDir) => {
     if (fs.statSync(subDir).isDirectory()) {
-      const files = compareFilesInDirectory(subDir);
+      const files = compareFilesInDirectory(subDir, referenceFiles);
       const differingKeys = compareKeys(files);
 
       if (differingKeys !== true) {
         differingFiles.push(subDir);
-        console.log(`Differences in directory ${subDir}. Keys: ${differingKeys.join(', ')}`);
+        console.log(
+          `Differences in directory ${subDir}. Keys: ${differingKeys}`
+        );
       }
 
-      processDirectory(subDir);
+      processDirectory(subDir, referenceFiles);
     }
   });
 };
 
-processDirectory(baseDirectory);
+const referenceDirectory = path.join(baseDirectory, "ua");
+const referenceFiles = getFilePaths(referenceDirectory);
+
+processDirectory(baseDirectory, referenceFiles);
 
 if (differingFiles.length === 0) {
   console.log("No differences in locale files were found");
