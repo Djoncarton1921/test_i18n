@@ -35,6 +35,8 @@ function getFilePaths(directory) {
 }
 
 function compareFilesInDirectory(directory) {
+  console.log(getFilePaths(directory));
+
   const files = getFilePaths(directory)
     .map((filePath) => {
       if (fs.statSync(filePath).isDirectory()) {
@@ -44,8 +46,6 @@ function compareFilesInDirectory(directory) {
       }
     })
     .flat();
-
-  console.log(files);
 
   return compareKeys(files);
 }
