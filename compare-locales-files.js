@@ -42,6 +42,7 @@ function compareFilesInDirectory(directory) {
         return compareFilesInDirectory(filePath);
       } else {
         console.log(filePath)
+        console.log("Current directory:", process.cwd());
         return require(filePath).default;
       }
     })
