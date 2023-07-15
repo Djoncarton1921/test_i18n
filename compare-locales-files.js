@@ -6,7 +6,6 @@ function compareKeys(files) {
   if (files.length < 2) {
     throw new Error("At least two files are required for comparison");
   }
-  console.log(files);
 
   const keys = {};
 
@@ -37,30 +36,41 @@ function getFilePaths(directory) {
 
 function compareFilesInDirectory(directory) {
   const files = getFilePaths(directory)
-    .filter((filePath) => fs.statSync(filePath).isFile())
-    .map((filePath) => require(filePath).default);
+    .map((filePath) => {
+      if (fs.statSync(filePath).isDirectory()) {
+        return compareFilesInDirectory(filePath);
+      } else {
+        return require(filePath).default;
+      }
+    })
+    .flat();
 
   return compareKeys(files);
 }
 
 const baseDirectory = "./src/i18n";
-const directories = fs
-  .readdirSync(baseDirectory)
-  .map((directory) => path.join(baseDirectory, directory));
-
 const differingFiles = [];
 
-for (let i = 0; i < directories.length; i++) {
-  const directory = directories[i];
-  const differingKeys = compareFilesInDirectory(directory);
+const processDirectory = (directory) => {
+  const directories = fs
+    .readdirSync(directory)
+    .map((subDir) => path.join(directory, subDir));
 
-  if (differingKeys !== true) {
-    differingFiles.push(directory);
-    console.log(
-      `Differences in directory ${directory}. Keys: ${differingKeys}`
-    );
-  }
-}
+  directories.forEach((subDir) => {
+    if (fs.statSync(subDir).isDirectory()) {
+      const differingKeys = compareFilesInDirectory(subDir);
+      if (differingKeys !== true) {
+        differingFiles.push(subDir);
+        console.log(
+          `Differences in directory ${subDir}. Keys: ${differingKeys}`
+        );
+      }
+      processDirectory(subDir);
+    }
+  });
+};
+
+processDirectory(baseDirectory);
 
 if (differingFiles.length === 0) {
   console.log("No differences in locale files were found");
