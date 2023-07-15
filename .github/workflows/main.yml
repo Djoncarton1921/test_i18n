@@ -1,7 +1,7 @@
 name: Translate locales js
 
 on:
-  pull_request:
+  push:
 
 jobs:
   build:
@@ -13,6 +13,7 @@ jobs:
         run: |
           SUBFOLDERS=$(find src/i18n -mindepth 1 -maxdepth 1 -type d)
           echo "::set-output name=subfolders::$SUBFOLDERS"
+          echo $SUBFOLDERS
 
       - name: DeepL Translate Github Action
         id: translate
@@ -21,5 +22,5 @@ jobs:
           target_languages: ${{ join(fromJson(steps.subfolders.outputs.subfolders), ',') }}
           input_file_path: src/i18n/ua/chat.js
           output_file_name_prefix: src/i18n/
-          output_file_extension: '.js'
+          output_file_extension: ".js"
           deepl_api_key: ${{ secrets.DEEPL_API_KEY }}
