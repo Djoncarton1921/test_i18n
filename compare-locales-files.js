@@ -3,35 +3,29 @@ const fs = require("fs");
 const path = require("path");
 
 function compareKeys(files) {
-  try {
-    if (files.length < 2) {
-      throw new Error("At least two files are required for comparison");
-    }
-
-    const keys = {};
-
-    files.forEach((file, index) => {
-      const fileKeys = Object.keys(file);
-
-      fileKeys.forEach((key) => {
-        if (!keys[key]) {
-          keys[key] = [index];
-        } else {
-          keys[key].push(index);
-        }
-      });
-    });
-
-    const differingKeys = Object.entries(keys).filter(([key, indexes]) => {
-      return indexes.length !== files.length;
-    });
-
-    return differingKeys.length === 0
-      ? true
-      : differingKeys.map(([key]) => key);
-  } catch (e) {
-    console.log(e);
+  if (files.length < 2) {
+    throw new Error("At least two files are required for comparison");
   }
+
+  const keys = {};
+
+  files.forEach((file, index) => {
+    const fileKeys = Object.keys(file);
+
+    fileKeys.forEach((key) => {
+      if (!keys[key]) {
+        keys[key] = [index];
+      } else {
+        keys[key].push(index);
+      }
+    });
+  });
+
+  const differingKeys = Object.entries(keys).filter(([key, indexes]) => {
+    return indexes.length !== files.length;
+  });
+
+  return differingKeys.length === 0 ? true : differingKeys.map(([key]) => key);
 }
 
 function getFilePaths(directory) {
@@ -46,7 +40,7 @@ function compareFilesInDirectory(directory) {
       if (fs.statSync(filePath).isDirectory()) {
         return compareFilesInDirectory(filePath);
       } else {
-        return require(filePath).default;
+        return require(`./${filePath}`).default;
       }
     })
     .flat();
