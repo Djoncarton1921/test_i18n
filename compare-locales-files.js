@@ -36,13 +36,11 @@ function getFilePaths(directory) {
 }
 
 function compareFilesInDirectory(directory) {
-  console.log(directory)
   const files = getFilePaths(directory)
     .map((filePath) => {
       if (fs.statSync(filePath).isDirectory()) {
         return compareFilesInDirectory(filePath);
       } else {
-        console.log(filePath);
         return require(filePath).default;
       }
     })
@@ -61,6 +59,7 @@ const processDirectory = (directory) => {
 
   directories.forEach((subDir) => {
     if (fs.statSync(subDir).isDirectory()) {
+      console.log(subDir);
       const differingKeys = compareFilesInDirectory(subDir);
       if (differingKeys !== true) {
         differingFiles.push(subDir);
