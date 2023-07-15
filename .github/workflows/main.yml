@@ -8,12 +8,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Retrieve Subfolders
-        id: subfolders
+      - name: Read target languages from file
+        id: read-languages
         run: |
-          SUBFOLDERS=$(find src/i18n -type d -print0 | xargs -0 printf "%s\n")
-          SUBFOLDERS=($SUBFOLDERS)
-          echo "::set-output name=subfolders::${SUBFOLDERS[*]}"
-
+          echo "::set-output name=languages::$(cat locales-list.txt)"
       - name: DeepL Translate Github Action
-        run: echo ${{ join(steps.subfolders.outputs.subfolders, ',') }}
+        id: translate
+        uses: lyqht/deepl-translate-github-action@v2.0.0
+        with:
+          target_languages: ${{ steps.read-languages.outputs.languages }}
+          input_file_path: src/i18n/ua/chat.js
+          output_file_name_prefix: src/i18n/
+          output_file_extension: ".js"
+          deepl_api_key: ${{ secrets.DEEPL_API_KEY }}
