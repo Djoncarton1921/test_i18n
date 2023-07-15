@@ -37,5 +37,9 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git commit -am "created locales"
-          git push origin main
+          git commit -am "dfffffffffffffffffffff"
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          branch: ${{ github.ref_name }}
+          github_token: ${{ secrets.AUTH_TOKEN }}
