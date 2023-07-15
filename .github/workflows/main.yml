@@ -20,7 +20,6 @@ jobs:
             for file in src/i18n/ua/*.js; do
               filename=$(basename "$file")
               base64_text=$(base64 -w 0 "$file")
-              echo $base64_text
               translated_text=$(curl -s -X POST \
                 -H "Content-Type: application/json" \
                 -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
@@ -32,6 +31,7 @@ jobs:
                 ]' \
                 "https://api.cognitive.microsofttranslator.com/" \
                 | jq -r '.[0].translations[0].text' | base64 -d)
+              echo "$translated_text"
               echo "$translated_text" > "src/i18n/$lang/$filename"
             done
           done
