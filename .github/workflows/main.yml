@@ -26,8 +26,8 @@ jobs:
               -d "[
                 {
                   \"from\": \"ua\",
-                  \"text\": \"$file_content\",
                   \"to\": \"$lang\"
+                  \"text\": \"$file_content\",
                 }
               ]"
             done
