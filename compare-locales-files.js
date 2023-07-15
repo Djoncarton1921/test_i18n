@@ -47,7 +47,7 @@ function compareFilesInDirectory(directory) {
       files.push(...subDirFiles);
     } else {
       const file = {
-        filePath: filePath,
+        filePath: `./${filePath}`,
         content: require(filePath).default
       };
       files.push(file);
