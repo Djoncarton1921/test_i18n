@@ -35,17 +35,17 @@ function getFilePaths(directory) {
 }
 
 function compareFilesInDirectory(directory) {
-  const files = getFilePaths(directory)
-    .map((filePath) => {
-      if (fs.statSync(filePath).isDirectory()) {
-        return compareFilesInDirectory(filePath);
-      } else {
-        return require(`./${filePath}`).default;
-      }
-    })
-    .flat();
+  const filePaths = getFilePaths(directory);
 
-  return compareKeys(files);
+  const files = filePaths.map((filePath) => {
+    if (fs.statSync(filePath).isDirectory()) {
+      return compareFilesInDirectory(filePath);
+    } else {
+      return require(`./${filePath}`).default;
+    }
+  });
+
+  return compareKeys(files.flat());
 }
 
 const baseDirectory = "./src/i18n";
@@ -58,7 +58,6 @@ const processDirectory = (directory) => {
 
   directories.forEach((subDir) => {
     if (fs.statSync(subDir).isDirectory()) {
-      console.log(subDir)
       const differingKeys = compareFilesInDirectory(subDir);
       if (differingKeys !== true) {
         differingFiles.push(subDir);
