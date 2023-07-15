@@ -45,7 +45,6 @@ jobs:
               fi
             fi
 
-            # File has modifications or target file doesn't exist, send for translation
             translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
               -H "Content-Type: application/json" \
               -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
@@ -54,10 +53,10 @@ jobs:
                   \"text\": \"$file_content\"
                 }
               ]")
+            echo $translated_text
             target_lang=$(echo "$translated_text" | jq -r '.[0].translations[0].to')
             mkdir -p "src/i18n/$target_lang"
-            echo "$translated_text" | jq -r '.[0].translations[0].text' > "$translated_file"
-            echo "$translated_text"
+            echo "$translated_text" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
           done
       - name: Commit files
         id: commit
