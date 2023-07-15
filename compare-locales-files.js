@@ -57,9 +57,10 @@ const processDirectory = (directory) => {
     .readdirSync(directory)
     .map((subDir) => path.join(directory, subDir));
 
+  console.log(directories);
+
   directories.forEach((subDir) => {
     if (fs.statSync(subDir).isDirectory()) {
-      console.log(subDir);
       const differingKeys = compareFilesInDirectory(subDir);
       if (differingKeys !== true) {
         differingFiles.push(subDir);
