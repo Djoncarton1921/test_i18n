@@ -1,10 +1,12 @@
 require = require("esm")(module);
 const fs = require("fs");
+const path = require("path");
 
 function compareKeys(files) {
   if (files.length < 2) {
     throw new Error("At least two files are required for comparison");
   }
+  console.log(files);
 
   const keys = {};
 
@@ -27,17 +29,39 @@ function compareKeys(files) {
   return differingKeys.length === 0 ? true : differingKeys.map(([key]) => key);
 }
 
-const uaFile = require("./src/i18n/ua/chat.js").default;
-const enFile = require("./src/i18n/en/chat.js").default;
-const frFile = require("./src/i18n/fr/chat.js").default;
+function getFilePaths(directory) {
+  const fileNames = fs.readdirSync(directory);
 
-const files = [uaFile, enFile, frFile];
-const differingKeys = compareKeys(files);
+  return fileNames.map((fileName) => path.join(directory, fileName));
+}
 
-if (differingKeys === true) {
-  throw new Error("No differences in locales were found");
-} else {
-  console.log(
-    `There are differences between locale files. Differences in the following keys: ${differingKeys}`
-  );
+function compareFilesInDirectory(directory) {
+  const files = getFilePaths(directory)
+    .filter((filePath) => fs.statSync(filePath).isFile())
+    .map((filePath) => require(filePath).default);
+
+  return compareKeys(files);
+}
+
+const baseDirectory = "./src/i18n";
+const directories = fs
+  .readdirSync(baseDirectory)
+  .map((directory) => path.join(baseDirectory, directory));
+
+const differingFiles = [];
+
+for (let i = 0; i < directories.length; i++) {
+  const directory = directories[i];
+  const differingKeys = compareFilesInDirectory(directory);
+
+  if (differingKeys !== true) {
+    differingFiles.push(directory);
+    console.log(
+      `Differences in directory ${directory}. Keys: ${differingKeys}`
+    );
+  }
+}
+
+if (differingFiles.length === 0) {
+  console.log("No differences in locale files were found");
 }
