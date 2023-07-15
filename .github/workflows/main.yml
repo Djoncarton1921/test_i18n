@@ -11,8 +11,9 @@ jobs:
       - name: Retrieve Subfolders
         id: subfolders
         run: |
-          SUBFOLDERS=$(find src/i18n -type d -print0 | xargs -0)
-          echo "::set-output name=subfolders::$SUBFOLDERS"
+          SUBFOLDERS=$(find src/i18n -type d -print0 | xargs -0 printf "%s\n")
+          SUBFOLDERS=($SUBFOLDERS)
+          echo "::set-output name=subfolders::${SUBFOLDERS[*]}"
 
       - name: DeepL Translate Github Action
         run: echo ${{ join(steps.subfolders.outputs.subfolders, ',') }}
