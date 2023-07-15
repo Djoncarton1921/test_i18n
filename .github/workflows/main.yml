@@ -1,7 +1,7 @@
 name: Translate locales js
 
 on:
-  push:
+  pull_request:
 
 jobs:
   build:
@@ -20,31 +20,6 @@ jobs:
           for file in src/i18n/ua/*.js; do
             filename=$(basename "$file")
             file_content=$(cat "$file")
-            target_locale_dir="src/i18n/en"
-            target_file="$target_locale_dir/$filename"
-            translated_file="src/i18n/$target_lang/$filename"
-
-            # Check if the target file exists
-            if [ -f "$target_file" ]; then
-              # Compare file contents by checking the presence of identical keys
-              identical_keys=1
-              while IFS= read -r line; do
-                if [[ "$line" =~ ^[[:space:]]*([A-Za-z_]+):.* ]]; then
-                  key="${BASH_REMATCH[1]}"
-                  if ! grep -q "[[:space:]]*$key:" "$target_file"; then
-                    identical_keys=0
-                    break
-                  fi
-                fi
-              done < "$file"
-
-              if [ "$identical_keys" -eq 1 ]; then
-                # Identical keys found, use the existing translated file
-                cp "$target_file" "$translated_file"
-                continue
-              fi
-            fi
-
             translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
               -H "Content-Type: application/json" \
               -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
@@ -53,10 +28,9 @@ jobs:
                   \"text\": \"$file_content\"
                 }
               ]")
-            echo "$translated_text"
             target_lang=$(echo "$translated_text" | jq -r '.[0].translations[0].to')
             mkdir -p "src/i18n/$target_lang"
-            echo "$translated_text" | jq -r '.[0].translations[0].text' > "$translated_file"
+            echo "$translated_text" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
           done
       - name: Commit files
         id: commit
