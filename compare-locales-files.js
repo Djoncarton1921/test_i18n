@@ -68,6 +68,7 @@ const processDirectory = (directory, referenceFiles) => {
   directories.forEach((subDir) => {
     if (fs.statSync(subDir).isDirectory()) {
       const files = compareFilesInDirectory(subDir, referenceFiles);
+      console.log(files)
       const differingKeys = compareKeys(files);
 
       if (differingKeys !== true) {
