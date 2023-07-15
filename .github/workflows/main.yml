@@ -21,17 +21,7 @@ jobs:
               filename=$(basename "$file")
               file_content=$(cat "$file")
               echo $file_content
-              translated_text=$(curl -s -X POST \
-                -H "Content-Type: application/json" \
-                -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
-                -d '[
-                  {
-                    "from": "ua",
-                    "text": "'"$file_content"'",
-                    "to": "'"$lang"'"
-                  }
-                ]' \
-                "https://api.cognitive.microsofttranslator.com/" \
+              translated_text=curl -X POST "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=en&to=de" -H "Ocp-Apim-Subscription-Key: <client-secret>" -H "Content-Type: application/json; charset=UTF-8" -d "[{'Text':'The word <mstrans:dictionary translation=\"wordomatic\">wordomatic</mstrans:dictionary> is a dictionary entry.'}]" \
                 | jq -r '.[0].translations[0].text')
               echo "$translated_text" > "src/i18n/$lang/$filename"
             done
