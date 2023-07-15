@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 function compareKeys(files) {
+  console.log(files);
   if (files.length < 2) {
     throw new Error("At least two files are required for comparison");
   }
@@ -40,7 +41,7 @@ function compareFilesInDirectory(directory) {
       if (fs.statSync(filePath).isDirectory()) {
         return compareFilesInDirectory(filePath);
       } else {
-        return require(path.resolve(filePath)).default;
+        return require(filePath).default;
       }
     })
     .flat();
@@ -48,7 +49,7 @@ function compareFilesInDirectory(directory) {
   return compareKeys(files);
 }
 
-const baseDirectory = path.resolve("./src/i18n");
+const baseDirectory = "./src/i18n";
 const differingFiles = [];
 
 const processDirectory = (directory) => {
