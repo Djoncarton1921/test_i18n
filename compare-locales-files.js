@@ -51,7 +51,11 @@ otherDirectories.forEach((dir) => {
     if (file.endsWith(".js")) {
       const filePath = path.join(otherDirectoryPath, file);
       const fileContent = require(`./${filePath}`).default;
-      const differingKeys = compareKeys([...filesToCompare, fileContent]);
+
+      const differingKeys = compareKeys(filesToCompare.map((fileToCompare) => ({
+        [fileToCompare]: fileToCompare,
+        [file]: fileContent,
+      })));
 
       console.log(`Differing keys in ${file}:`, differingKeys);
     }
