@@ -1,4 +1,5 @@
-const fs = require("fs");
+require = require('esm')(module);
+const fs = require('fs');
 
 function compareKeys(file1, file2) {
   const keys1 = Object.keys(file1);
@@ -18,11 +19,11 @@ function compareKeys(file1, file2) {
   return true;
 }
 
-const uaFile = require("./src/i18n/ua/chat.js").default;
-const enFile = require("./src/i18n/en/chat.js").default;
+const uaFile = require('./src/i18n/ua/chat.js').default;
+const enFile = require('./src/i18n/en/chat.js').default;
 
 if (compareKeys(uaFile, enFile)) {
-  console.log("All keys are correct.");
+  console.log('All keys are correct.');
 } else {
-  console.log("Keys are not the same in all files.");
+  console.log('Keys are not the same in all files.');
 }
