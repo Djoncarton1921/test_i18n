@@ -19,7 +19,7 @@ jobs:
             mkdir -p src/i18n/$lang
             for file in src/i18n/ua/*.js; do
               filename=$(basename "$file")
-              text=$(cat "$file")
+              text=$(cat "$file" | jq -s -R .)
               translated_text=$(curl -s -X POST \
                 -H "Content-Type: application/json" \
                 -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
