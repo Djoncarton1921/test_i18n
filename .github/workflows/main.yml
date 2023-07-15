@@ -15,12 +15,11 @@ jobs:
       - name: Translate with Microsoft Translator
         id: translate
         run: |
-          langs=$(sed 's/$/&\&to=/g' locales-list.txt | tr -d '\n' | sed 's/\&to=$//')
           mkdir -p src/i18n
           for file in src/i18n/ua/*.js; do
             filename=$(basename "$file")
             file_content=$(cat "$file")
-            translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
+            translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$(cat locales-list.txt)" \
               -H "Content-Type: application/json" \
               -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
               -d "[
@@ -28,5 +27,12 @@ jobs:
                   \"text\": \"$file_content\"
                 }
               ]")
-            echo $translated_text
+            translations=$(echo "$translated_text" | jq -r '.[].translations[]')
+            while IFS= read -r translation; do
+              lang=$(echo "$translation" | jq -r '.to')
+              translated=$(echo "$translation" | jq -r '.text')
+              lang_dir="src/i18n/$lang"
+              mkdir -p "$lang_dir"
+              echo "$translated" > "$lang_dir/$filename"
+            done <<< "$translations"
           done
