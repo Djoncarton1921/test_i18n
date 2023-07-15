@@ -18,8 +18,8 @@ function compareKeys(file1, file2) {
   return true;
 }
 
-const uaFile = require("./src/i18n/ua/chat.js");
-const enFile = require("./src/i18n/en/chat.js");
+const uaFile = require("./src/i18n/ua/chat.js").default;
+const enFile = require("./src/i18n/en/chat.js").default;
 
 if (compareKeys(uaFile, enFile)) {
   console.log("All keys are correct.");
