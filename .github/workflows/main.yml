@@ -30,6 +30,8 @@ jobs:
               ]")
             target_lang=$(echo "$translated_text" | jq -r '.[0].translations[0].to')
             mkdir -p "src/i18n/$target_lang"
+
+            echo $translated_text
             
             # Check if the file exists in other locales
             for other_file in src/i18n/*/*.js; do
@@ -47,12 +49,14 @@ jobs:
             echo "$translated_text" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
           done
       - name: Commit files
+        id: commit
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git commit -am "Update translations"
+          git diff-index --quiet HEAD || git commit -am "Update translations"
       - name: Push changes
+        if: steps.commit.outputs.returncode == 0
         uses: ad-m/github-push-action@v0.6.0
         with:
           branch: ${{ github.ref_name }}
