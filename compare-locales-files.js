@@ -45,6 +45,8 @@ function compareFilesInDirectory(directory) {
     })
     .flat();
 
+  console.log(files);
+
   return compareKeys(files);
 }
 
