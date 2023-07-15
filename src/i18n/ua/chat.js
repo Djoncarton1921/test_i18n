@@ -61,5 +61,4 @@ export default {
     search_messages: "Пошук повідомлень",
     manage_group: "Керування групою",
   },
-  new_key: "dffdffd",
 };
