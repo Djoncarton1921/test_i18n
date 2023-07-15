@@ -40,7 +40,7 @@ function compareFilesInDirectory(directory) {
       if (fs.statSync(filePath).isDirectory()) {
         return compareFilesInDirectory(filePath);
       } else {
-        return require(filePath).default;
+        return require(path.resolve(filePath)).default;
       }
     })
     .flat();
@@ -48,7 +48,7 @@ function compareFilesInDirectory(directory) {
   return compareKeys(files);
 }
 
-const baseDirectory = "./src/i18n";
+const baseDirectory = path.resolve("./src/i18n");
 const differingFiles = [];
 
 const processDirectory = (directory) => {
