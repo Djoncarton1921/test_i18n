@@ -31,4 +31,16 @@ jobs:
             target_lang=$(echo "$translated_text" | jq -r '.[0].translations[0].to')
             mkdir -p "src/i18n/$target_lang"
             echo "$translated_text" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
+            echo $translated_text
           done
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "locales created"
+          git add .
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          branch: develop
+          github_token: ${{ secrets.AUTH_TOKEN }}
