@@ -31,8 +31,7 @@ jobs:
             target_lang=$(echo "$translated_text" | jq -r '.[0].translations[0].to')
             mkdir -p "src/i18n/$target_lang"
             echo "$translated_text" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
-            echo $target_lang
-            echo $filename
+            echo $translated_text" | jq -r '.[0].translations[0].text
           done
       - name: Commit files
         run: |
