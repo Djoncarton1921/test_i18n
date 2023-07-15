@@ -1,5 +1,6 @@
 require = require("esm")(module);
 const fs = require("fs");
+const path = require("path");
 
 function compareKeys(file1, file2) {
   const keys1 = Object.keys(file1);
@@ -21,15 +22,63 @@ function compareKeys(file1, file2) {
   return differingKeys.length === 0 ? true : differingKeys;
 }
 
-const uaFile = require("./src/i18n/ua/chat.js").default;
-const enFile = require("./src/i18n/en/chat.js").default;
+const i18nDir = "./src/i18n";
+const languageFolders = fs
+  .readdirSync(i18nDir, { withFileTypes: true })
+  .filter((dirent) => dirent.isDirectory())
+  .map((dirent) => dirent.name);
 
-const differingKeys = compareKeys(uaFile, enFile);
+const differingKeys = [];
 
-if (differingKeys === true) {
+for (const languageFolder of languageFolders) {
+  const subdirectories = fs
+    .readdirSync(path.join(i18nDir, languageFolder), { withFileTypes: true })
+    .filter((dirent) => dirent.isDirectory())
+    .map((dirent) => dirent.name);
+
+  for (const subdirectory of subdirectories) {
+    const filePath = path.join(i18nDir, languageFolder, subdirectory);
+
+    if (fs.existsSync(filePath)) {
+      const files = fs
+        .readdirSync(filePath)
+        .filter((file) => file.endsWith(".js"));
+
+      for (const file of files) {
+        const file1 = require(path.join(filePath, file)).default;
+        const file2 = require(path.join(
+          i18nDir,
+          "en",
+          subdirectory,
+          file
+        )).default;
+        const diff = compareKeys(file1, file2);
+
+        if (diff !== true) {
+          differingKeys.push({
+            language: languageFolder,
+            subdirectory,
+            file,
+            differingKeys: diff,
+          });
+        }
+      }
+    }
+  }
+}
+
+if (differingKeys.length === 0) {
   throw new Error("No differences in locales were found");
 } else {
-  console.log(
-    `There are differences between locale files. Differences in such keys as: ${differingKeys}`
-  );
+  console.log("There are differences between locale files:");
+  for (const {
+    language,
+    subdirectory,
+    file,
+    differingKeys: diff,
+  } of differingKeys) {
+    console.log(
+      `Language: ${language}, Subdirectory: ${subdirectory}, File: ${file}, Differences in keys: ${diff}`
+    );
+  }
 }
