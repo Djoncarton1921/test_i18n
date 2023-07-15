@@ -3,8 +3,6 @@ const fs = require("fs");
 const path = require("path");
 
 function compareKeys(file1, file2) {
-  console.log(file1);
-  console.log(file2);
   const keys1 = Object.keys(file1);
   const keys2 = Object.keys(file2);
 
@@ -54,6 +52,8 @@ for (const languageFolder of languageFolders) {
           subdirectory,
           file
         )).default;
+
+        console.log(file1);
         const diff = compareKeys(file1, file2);
 
         if (diff !== true) {
