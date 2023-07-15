@@ -26,7 +26,7 @@ export default {
     title: "У цьому чаті ще не було повідмлень",
     main_text: "Надішліть овідомлення першим, щоб розпочати бесіду вже зараз!",
   },
-  edit_chat_modal: {
+  ggg: {
     select_photo: "Обрати фото",
     manage_group: "Керування групою",
     name_of_group_chat: "Назва бесіди",
