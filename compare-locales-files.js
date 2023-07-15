@@ -36,13 +36,13 @@ function getFilePaths(directory) {
 }
 
 function compareFilesInDirectory(directory) {
+  console.log(directory)
   const files = getFilePaths(directory)
     .map((filePath) => {
       if (fs.statSync(filePath).isDirectory()) {
         return compareFilesInDirectory(filePath);
       } else {
-        console.log(filePath)
-        console.log("Current directory:", process.cwd());
+        console.log(filePath);
         return require(filePath).default;
       }
     })
