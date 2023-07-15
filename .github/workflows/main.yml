@@ -30,6 +30,20 @@ jobs:
               ]")
             target_lang=$(echo "$translated_text" | jq -r '.[0].translations[0].to')
             mkdir -p "src/i18n/$target_lang"
+            
+            # Check if the file exists in other locales
+            for other_file in src/i18n/*/*.js; do
+              if [ "$other_file" != "$file" ]; then
+                other_file_content=$(cat "$other_file")
+                if [[ "$other_file_content" == *"$filename"* ]]; then
+                  # The file exists in this locale, update only the translated text
+                  translated_text=$(echo "$translated_text" | jq -r '.[0].translations[0].text')
+                  other_file_content=${other_file_content//$filename/$translated_text}
+                  echo "$other_file_content" > "$other_file"
+                fi
+              fi
+            done
+            
             echo "$translated_text" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
           done
       - name: Commit files
@@ -37,8 +51,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git commit -am "dfdffdfdfd"
-          git tag ${{ steps.semantic_release_info.outputs.git_tag }}
+          git commit -am "Update translations"
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
         with:
