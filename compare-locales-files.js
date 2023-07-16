@@ -44,6 +44,8 @@ directories.forEach((directory) => {
     }
   });
 
+  console.log(filesToCompare);
+
   // Compare files in the current directory
   filesToCompare.forEach((file, index) => {
     const fileName = path.basename(Object.keys(file)[0], ".js");
