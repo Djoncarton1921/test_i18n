@@ -36,9 +36,8 @@ jobs:
               done
             done
             if [[ $all_subdirs_have_filename == true ]]; then
-              echo "${files_to_compare[@]}"
               npm i esm
-              node compare-locales.js $files_to_compare
+              node compare-locales.js ${files_to_compare[@]}
             else
               do_request_to_translate=true
               echo "$subfile: Not all subdirectories have $filename"
