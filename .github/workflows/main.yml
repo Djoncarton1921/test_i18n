@@ -30,6 +30,7 @@ jobs:
               files_to_compare+=("$subfile")
               for subdir in src/i18n/*/; do
                 subfile_in_subdir="$subdir$filename"
+                echo "-----subfile_in_subdir $subfile_in_subdir"
                 if [[ "$subfile_in_subdir" != "$subfile" ]]; then
                   if [[ ! -e "$subfile_in_subdir" ]]; then
                     all_subdirs_have_filename=false
@@ -55,7 +56,6 @@ jobs:
                     \"text\": \"$file_content\"
                   }
                 ]")
-              echo $translated_text
               target_lang=$(echo "$translated_text" | jq -r '.[0].translations[0].to')
               mkdir -p "src/i18n/$target_lang"
               echo "$translated_text" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
