@@ -27,7 +27,6 @@ jobs:
             for subfile in src/i18n/ua/*.js; do
               for subdir in src/i18n/*/; do
                 subfile_in_subdir="$subdir$filename"
-                files_to_compare+=("$subfile_in_subdir")
                 echo "$subfile_in_subdir"
                 if [[ "$subfile_in_subdir" != "$subfile" ]]; then
                   if [[ ! -e "$subfile_in_subdir" ]]; then
@@ -36,6 +35,7 @@ jobs:
                   fi
                 fi
               done
+              files_to_compare+=("$subfile_in_subdir")
             done
             if [[ $all_subdirs_have_filename == true ]]; then
               echo "$files_to_compare -----files_to_compare"
