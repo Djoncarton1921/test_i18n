@@ -42,7 +42,6 @@ jobs:
                 echo "$subfile: Not all subdirectories have $filename"
               fi
             done
-            echo $files_to_compare
             file_content=$(cat "$file")
             translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
               -H "Content-Type: application/json" \
