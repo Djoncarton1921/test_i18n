@@ -57,6 +57,7 @@ jobs:
               mkdir -p "src/i18n/$target_lang"
               echo "$translated_text" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
             fi
+            files_to_compare=()
           done
       - name: Commit files
         id: commit
