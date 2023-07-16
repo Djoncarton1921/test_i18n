@@ -42,7 +42,6 @@ jobs:
                 do_request_to_translate=true
                 echo "$subfile: Not all subdirectories have $filename"
               fi
-              files_to_compare+=("$subfile_in_subdir")
             done
             if [[ $do_request_to_translate == true ]]; then
               file_content=$(cat "$file")
