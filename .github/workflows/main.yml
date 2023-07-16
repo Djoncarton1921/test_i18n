@@ -23,6 +23,7 @@ jobs:
             filename=$(basename "$file")
             for subfile in src/i18n/*/$filename; do
               if [[ "$subfile" != *"ua"* ]]; then
+                echo $subfile
                 files_to_compare+=("$subfile")
               fi
             done
