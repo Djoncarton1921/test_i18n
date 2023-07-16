@@ -29,9 +29,7 @@ function compareKeys(files) {
 
 const filePaths = process.argv.slice(2);
 
-const files = filePaths.map((filePath) => require(filePath).default);
-
-console.log(files);
+const files = filePaths.map((filePath) => require(`./${filePath}`).default);
 
 const differingKeys = compareKeys(files);
 
