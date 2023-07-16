@@ -15,4 +15,4 @@ jobs:
       - name: Display changes
         run: |
           echo "Changes in i18n/ua folder:"
-          git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep '^src/i18n/ua/'
+          git diff --name-only ${{ github.event.before }} ${{ github.event.after }} -- 'src/i18n/ua/'
