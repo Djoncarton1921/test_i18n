@@ -23,7 +23,7 @@ export default {
     symbols: "Symbols",
     flags: "Flags",
   },
-  fgg: {
+  d12112: {
     title: "There were no notifications in this chat yet",
     main_text: "Send a message to the first to start the conversation now!",
   },
