@@ -1,22 +1,18 @@
-name: I18n Changes
-
+name: I18n Folder Monitor
 on:
   push:
     paths:
       - "src/i18n/ua/**"
 
 jobs:
-  check-i18n-changes:
+  monitor_changes:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Print changed files
+      - name: Display changes
         run: |
-          echo "${{ github.event.compare }}"
-
-      - name: List changes
-        run: |
-          git diff --name-only ${{ github.event.before }}..${{ github.event.after }} -- src/i18n/ua/
+          echo "Changes in i18n/ua folder:"
+          git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep '^src/i18n/ua/'
