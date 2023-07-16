@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 function compareKeys(files) {
+  console.log(files.length)
   if (files.length < 2) {
     throw new Error("At least two files are required for comparison");
   }
