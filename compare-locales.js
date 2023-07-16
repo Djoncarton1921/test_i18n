@@ -29,7 +29,7 @@ function compareKeys(files) {
 
 const filePaths = process.argv.slice(2);
 
-console.log(filePaths);
+console.log("dffffffffffffffff");
 
 const files = filePaths.map((filePath) => require(`./${filePath}`).default);
 
