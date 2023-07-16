@@ -31,6 +31,8 @@ const filePaths = process.argv.slice(2);
 
 const files = filePaths.map((filePath) => require(filePath).default);
 
+console.log(files);
+
 const differingKeys = compareKeys(files);
 
 if (differingKeys === true) {

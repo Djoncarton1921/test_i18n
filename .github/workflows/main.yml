@@ -28,7 +28,7 @@ jobs:
               for subdir in src/i18n/*/; do
                 subfile_in_subdir="$subdir$filename"
                 duplicate=false
-                
+
                 for file in "${files_to_compare[@]}"; do
                   if [[ "$file" == "$subfile_in_subdir" ]]; then
                     duplicate=true
@@ -50,7 +50,8 @@ jobs:
               done
             done
             if [[ $all_subdirs_have_filename == true ]]; then
-              echo "$files_to_compare -----files_to_compare"
+              node compare-locales.js $files_to_compare
+              files_to_compare=()
             else
               do_request_to_translate=true
               echo "$subfile: Not all subdirectories have $filename"
@@ -69,7 +70,6 @@ jobs:
               mkdir -p "src/i18n/$target_lang"
               echo "$translated_text" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
             fi
-            files_to_compare=()
           done
       - name: Commit files
         id: commit
