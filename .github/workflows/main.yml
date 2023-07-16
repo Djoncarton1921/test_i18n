@@ -22,6 +22,7 @@ jobs:
             files_to_compare+=("$file")
             filename=$(basename "$file")
             all_subdirs_have_filename=true
+            do_request_to_translate=false
             echo $filename
 
             for subfile in src/i18n/ua/*.js; do
@@ -40,22 +41,25 @@ jobs:
               if [[ $all_subdirs_have_filename == true ]]; then
                 echo "$subfile: All subdirectories have $filename"
               else
+                do_request_to_translate=true
                 echo "$subfile: Not all subdirectories have $filename"
               fi
             done
-            file_content=$(cat "$file")
-            translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
-              -H "Content-Type: application/json" \
-              -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
-              -d "[
-                {
-                  \"text\": \"$file_content\"
-                }
-              ]")
-            echo $translated_text
-            target_lang=$(echo "$translated_text" | jq -r '.[0].translations[0].to')
-            mkdir -p "src/i18n/$target_lang"
-            echo "$translated_text" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
+            if [[ $do_request_to_translate == true ]]; then
+              file_content=$(cat "$file")
+              translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
+                -H "Content-Type: application/json" \
+                -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
+              - d "[
+                  {
+                    \"text\": \"$file_content\"
+                  }
+                ]")
+              echo $translated_text
+              target_lang=$(echo "$translated_text" | jq -r '.[0].translations[0].to')
+              mkdir -p "src/i18n/$target_lang"
+              echo "$translated_text" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
+            fi
           done
       - name: Commit files
         id: commit
