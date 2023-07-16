@@ -18,12 +18,15 @@ jobs:
           langs=$(sed 's/$/&\&to=/g' locales-list.txt | tr -d '\n' | sed 's/\&to=$//')
           mkdir -p src/i18n
           for file in src/i18n/ua/*.js; do
+            files_to_compare=()
+            files_to_compare+=("$file")
             filename=$(basename "$file")
             for subfile in src/i18n/*/$filename; do
               if [[ "$subfile" != *"ua"* ]]; then
-                echo "$subfile"
+                files_to_compare+=("$subfile")
               fi
-            done 
+            done
+            echo $files_to_compare
             file_content=$(cat "$file")
             translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
               -H "Content-Type: application/json" \
