@@ -21,10 +21,18 @@ jobs:
             files_to_compare=()
             files_to_compare+=("$file")
             filename=$(basename "$file")
-            for subfile in src/i18n/*/$filename; do
-              if [[ "$subfile" != *"ua"* ]]; then
-                echo $subfile
-                files_to_compare+=("$subfile")
+            for subfile in src/i18n/ua/*.js; do
+              files_to_compare=()
+              files_to_compare+=("$subfile")
+              for subdir in src/i18n/*/; do
+                subfile_in_subdir="$subdir$filename"
+                echo $subfile_in_subdir
+                if [[ "$subfile_in_subdir" != "$subfile" ]]; then
+                  if [[ ! -e "$subfile_in_subdir" ]]; then
+                    all_subdirs_have_filename=false
+                    break
+                  fi
+                files_to_compare+=("$subfile_in_subdir")
               fi
             done
             echo $files_to_compare
