@@ -1,7 +1,7 @@
 name: Translate locales js
 
 on:
-  pull_request:
+  push:
 
 jobs:
   build:
@@ -19,6 +19,7 @@ jobs:
           mkdir -p src/i18n
           for file in src/i18n/ua/*.js; do
             filename=$(basename "$file")
+            echo $filename
             file_content=$(cat "$file")
             translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
               -H "Content-Type: application/json" \
