@@ -39,7 +39,7 @@ export default {
     button_1: "No, do not cancel",
     button_2: "Yes, cancel",
   },
-  121221: {
+  gggg: {
     title: "Exceeding the limit",
     main_text: "You can assign up to 3 moderators.",
   },
