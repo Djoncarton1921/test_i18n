@@ -15,4 +15,8 @@ jobs:
 
       - name: Print changed files
         run: |
-          git diff --name-only ${{ github.sha }}~1..${{ github.sha }} -- src/i18n/ua/
+          echo "${{ github.event.compare }}"
+
+      - name: List changes
+        run: |
+          git diff --name-only ${{ github.event.before }}..${{ github.event.after }} -- src/i18n/ua/
