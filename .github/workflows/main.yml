@@ -17,9 +17,9 @@ jobs:
         run: |
           langs=$(sed 's/$/&\&to=/g' locales-list.txt | tr -d '\n' | sed 's/\&to=$//')
           mkdir -p src/i18n
+          files_to_compare=()
           for file in src/i18n/ua/*.js; do
             filename=$(basename "$file")
-            files_to_compare=()
             all_subdirs_have_filename=true
             do_request_to_translate=false
 
@@ -36,7 +36,7 @@ jobs:
               done
             done
             if [[ $all_subdirs_have_filename == true ]]; then
-              echo "$files_to_compare ----------"
+              echo "${files_to_compare[@]}"
               npm i esm
               node compare-locales.js $files_to_compare
             else
