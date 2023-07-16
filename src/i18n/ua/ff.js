@@ -12,7 +12,6 @@ export default {
   online: "Online",
   message_edited: "edit",
   message_editing: "Edit message",
-  fdfddfdf: "fdfdfdfd",
   emoji_groups: {
     smileys_people: "Smiles and people",
     animals_nature: "Animals and nature",
@@ -23,7 +22,7 @@ export default {
     symbols: "Symbols",
     flags: "Flags",
   },
-  d12112: {
+  no_chat_messages: {
     title: "There were no notifications in this chat yet",
     main_text: "Send a message to the first to start the conversation now!",
   },
@@ -39,7 +38,7 @@ export default {
     button_1: "No, do not cancel",
     button_2: "Yes, cancel",
   },
-  gggg: {
+  admins_limit_reached_modal: {
     title: "Exceeding the limit",
     main_text: "You can assign up to 3 moderators.",
   },
