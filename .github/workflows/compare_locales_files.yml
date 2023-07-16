@@ -15,4 +15,4 @@ jobs:
 
       - name: Print changed files
         run: |
-          git diff --name-only HEAD^..HEAD -- src/i18n/ua/
+          git diff --name-only HEAD~1..HEAD -- src/i18n/ua/
