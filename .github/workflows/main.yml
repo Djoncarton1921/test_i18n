@@ -28,7 +28,6 @@ jobs:
               files_to_compare+=("$subfile")
               for subdir in src/i18n/*/; do
                 subfile_in_subdir="$subdir$filename"
-                echo $subfile_in_subdir
                 if [[ "$subfile_in_subdir" != "$subfile" ]]; then
                   if [[ ! -e "$subfile_in_subdir" ]]; then
                     all_subdirs_have_filename=false
@@ -37,6 +36,11 @@ jobs:
                 files_to_compare+=("$subfile_in_subdir")
               fi
               done
+              if [[ $all_subdirs_have_filename == true ]]; then
+                echo "$subfile: All subdirectories have $filename"
+              else
+                echo "$subfile: Not all subdirectories have $filename"
+              fi
             done
             echo $files_to_compare
             file_content=$(cat "$file")
