@@ -26,17 +26,7 @@ jobs:
             for subfile in src/i18n/ua/*.js; do
               for subdir in src/i18n/*/; do
                 subfile_in_subdir="$subdir$filename"
-                duplicate=false
-                
-                for file in "${files_to_compare[@]}"; do
-                  if [[ "$file" == "$subfile_in_subdir" ]]; then
-                    duplicate=true
-                    break
-                  fi
-                done
-                if [[ "$duplicate" == false ]]; then
-                  files_to_compare+=("$subfile_in_subdir")
-                fi
+                files_to_compare+=("$subfile_in_subdir")
                 if [[ "$subfile_in_subdir" != "$subfile" ]]; then
                   if [[ ! -e "$subfile_in_subdir" ]]; then
                     all_subdirs_have_filename=false
@@ -46,10 +36,11 @@ jobs:
               done
             done
             if [[ $all_subdirs_have_filename == true ]]; then
-              npm i esm
-              echo $files_to_compare
-              node compare-locales.js $files_to_compare
-              files_to_compare=()
+              # npm i esm
+              # echo $files_to_compare
+              # node compare-locales.js $files_to_compare
+              # files_to_compare=()
+              echo "$files_to_compare,  -------------------------"
             else
               do_request_to_translate=true
               echo "$subfile: Not all subdirectories have $filename"
