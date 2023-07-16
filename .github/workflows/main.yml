@@ -27,17 +27,20 @@ jobs:
             for subfile in src/i18n/ua/*.js; do
               for subdir in src/i18n/*/; do
                 subfile_in_subdir="$subdir$filename"
-                already_exists=false
+                duplicate=false
+                
                 for file in "${files_to_compare[@]}"; do
                   if [[ "$file" == "$subfile_in_subdir" ]]; then
-                    already_exists=true
+                    duplicate=true
                     break
                   fi
                 done
-                if [[ "$already_exists" == false ]]; then
+                if [[ "$duplicate" == false ]]; then
                   files_to_compare+=("$subfile_in_subdir")
                 fi
+
                 echo "$subfile_in_subdir"
+
                 if [[ "$subfile_in_subdir" != "$subfile" ]]; then
                   if [[ ! -e "$subfile_in_subdir" ]]; then
                     all_subdirs_have_filename=false
