@@ -22,7 +22,8 @@ jobs:
             files_to_compare+=("$file")
             filename=$(basename "$file")
             all_subdirs_have_filename=true
-
+            echo $filename
+            
             for subfile in src/i18n/ua/*.js; do
               files_to_compare=()
               files_to_compare+=("$subfile")
