@@ -29,7 +29,6 @@ jobs:
               files_to_compare+=("$subfile")
               for subdir in src/i18n/*/; do
                 subfile_in_subdir="$subdir$filename"
-                files_to_compare+=("$subfile_in_subdir")
                 if [[ "$subfile_in_subdir" != "$subfile" ]]; then
                   if [[ ! -e "$subfile_in_subdir" ]]; then
                     all_subdirs_have_filename=false
@@ -43,6 +42,7 @@ jobs:
                 do_request_to_translate=true
                 echo "$subfile: Not all subdirectories have $filename"
               fi
+              files_to_compare+=("$subfile_in_subdir")
             done
             if [[ $do_request_to_translate == true ]]; then
               file_content=$(cat "$file")
