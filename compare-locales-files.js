@@ -1,3 +1,5 @@
+require = require("esm")(module);
+
 const fs = require('fs');
 const path = require('path');
 
@@ -24,7 +26,6 @@ function compareFilesInLocales(localeIndex, fileIndex, files) {
     try {
       const differingKeys = compareKeys(files.map((file) => {
         const fileData = fs.readFileSync(path.join(baseFolder, locales[localeIndex], file), 'utf8');
-        console.log(fileData)
         return JSON.parse(fileData);
       }));
 
@@ -55,7 +56,6 @@ function compareKeys(files) {
 
     fileKeys.forEach((key) => {
       if (!keys[key]) {
-        keys[key] = [index];
       } else {
         keys[key].push(index);
       }
