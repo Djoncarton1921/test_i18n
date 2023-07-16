@@ -29,16 +29,19 @@ function compareKeys(files) {
 
 const filePaths = process.argv.slice(2);
 
-console.log(filePaths, "filePaths");
-
 const files = filePaths.map((filePath) => require(`./${filePath}`).default);
 
 const differingKeys = compareKeys(files);
 
 if (differingKeys === true) {
-  throw new Error("No differences in locales were found");
+  console.error({
+    status: "ERROR",
+    message: "No differences in locales were found",
+  });
 } else {
-  console.log(
-    `There are differences between locale files. Differences in the following keys: ${differingKeys}`
-  );
+  console.log({
+    status: "SUCCESS",
+    message:
+      "There are differences between locale files. Differences in the following keys: ${differingKeys}`",
+  });
 }
