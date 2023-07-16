@@ -35,8 +35,8 @@ jobs:
                   fi
                 fi
               done
-              files_to_compare+=("$subfile_in_subdir")
             done
+            files_to_compare+=("$subfile_in_subdir")
             if [[ $all_subdirs_have_filename == true ]]; then
               echo "$files_to_compare -----files_to_compare"
             else
