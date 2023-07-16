@@ -1,9 +1,48 @@
-require = require("esm")(module);
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
+
+const baseFolder = './src/i18n';
+const locales = ['ua', 'en', 'fr', 'ja']; // Add more locales if needed
+
+function compareFilesInLocales(localeIndex, fileIndex, files) {
+  if (fileIndex >= files.length) {
+    // Reached the end of files in the current locale
+    return;
+  }
+
+  const fileName = files[fileIndex];
+  const filePath = path.join(baseFolder, locales[localeIndex], fileName);
+  
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error(`Error reading file: ${filePath}`);
+      return;
+    }
+
+    const file = JSON.parse(data);
+
+    try {
+      const differingKeys = compareKeys(files.map((file) => {
+        const fileData = fs.readFileSync(path.join(baseFolder, locales[localeIndex], file), 'utf8');
+        return JSON.parse(fileData);
+      }));
+
+      if (differingKeys === true) {
+        console.log(`All keys match in ${filePath}`);
+      } else {
+        console.log(`Differing keys found in ${filePath}:`);
+        console.log(differingKeys);
+      }
+    } catch (error) {
+      console.error(`Error comparing keys in ${filePath}:`, error);
+    }
+
+    compareFilesInLocales(localeIndex + 1, fileIndex, files);
+  });
+}
 
 function compareKeys(files) {
-  console.log(files.length)
+  console.log(files);
   if (files.length < 2) {
     throw new Error("At least two files are required for comparison");
   }
@@ -29,38 +68,4 @@ function compareKeys(files) {
   return differingKeys.length === 0 ? true : differingKeys.map(([key]) => key);
 }
 
-const directoryPath = "./src/i18n/ua";
-const otherDirectories = ["en", "fr"];
-
-// Read files from the 'ua' directory
-fs.readdirSync(directoryPath).forEach((file) => {
-  if (file.endsWith(".js")) {
-    const filePath = path.join(directoryPath, file);
-    const fileContent = require(`./${filePath}`).default; // Assuming the files are valid JavaScript modules exporting objects
-    const filesToCompareInDirectory = [fileContent]; // Store the file being compared within the current directory
-
-    // Compare files in the same directory
-    filesToCompareInDirectory.forEach((fileToCompare) => {
-      const differingKeys = compareKeys([
-        ...filesToCompareInDirectory,
-        fileToCompare,
-      ]);
-      console.log(`Differing keys in ${file}:`, differingKeys);
-    });
-  }
-});
-
-// Compare files in other directories
-otherDirectories.forEach((dir) => {
-  const otherDirectoryPath = path.join("./src/i18n", dir);
-
-  fs.readdirSync(otherDirectoryPath).forEach((file) => {
-    if (file.endsWith(".js")) {
-      const filePath = path.join(otherDirectoryPath, file);
-      const fileContent = require(`./${filePath}`).default;
-      const differingKeys = compareKeys([fileContent]);
-
-      console.log(`Differing keys in ${file}:`, differingKeys);
-    }
-  });
-});
+compareFilesInLocales(0, 0, fs.readdirSync(path.join(baseFolder, locales[0])));
