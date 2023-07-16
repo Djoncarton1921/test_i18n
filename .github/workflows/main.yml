@@ -51,7 +51,8 @@ jobs:
             if [[ $all_subdirs_have_filename == true ]]; then
               npm i esm
               result=$(node compare-locales.js "${files_to_compare[@]}")
-              echo $result
+              status=$(echo "$response" | jq -r '.status')
+              echo "Статус: $status"
               files_to_compare=()
             else
               do_request_to_translate=true
