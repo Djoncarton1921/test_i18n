@@ -8,7 +8,7 @@ export default {
       "Sorry, but you were excluded from the group. Sending messages in this chat is no longer available. You can contact the channel administration for more information",
     select_chat_from_the_list: "Choose a chat to start chatting",
     user_joined_to_chat: "{userFullName} just joined the conversation",
-    dgfffffffff: "Members",
+    ggggggg: "Members",
     online: "Online",
     message_edited: "edit",
     message_editing: "Edit message",

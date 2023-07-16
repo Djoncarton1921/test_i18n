@@ -39,7 +39,7 @@ export default {
     button_1: "No, do not cancel",
     button_2: "Yes, cancel",
   },
-  admins_limit_reached_modal: {
+  121221: {
     title: "Exceeding the limit",
     main_text: "You can assign up to 3 moderators.",
   },
