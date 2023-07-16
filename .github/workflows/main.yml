@@ -27,7 +27,8 @@ jobs:
             for subfile in src/i18n/ua/*.js; do
               for subdir in src/i18n/*/; do
                 subfile_in_subdir="$subdir$filename"
-                # files_to_compare+=("$subfile_in_subdir")
+                files_to_compare+=("$subfile_in_subdir")
+                echo "fdfdfdffd----- $files_to_compare"
                 if [[ "$subfile_in_subdir" != "$subfile" ]]; then
                   if [[ ! -e "$subfile_in_subdir" ]]; then
                     all_subdirs_have_filename=false
@@ -36,7 +37,7 @@ jobs:
                 fi
               done
               if [[ $all_subdirs_have_filename == true ]]; then
-                echo "files_to_compare----- $files_to_compare"
+                echo ""
               else
                 do_request_to_translate=true
                 echo "$subfile: Not all subdirectories have $filename"
