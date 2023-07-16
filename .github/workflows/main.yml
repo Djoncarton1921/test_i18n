@@ -38,7 +38,7 @@ jobs:
                 fi
               done
               if [[ $all_subdirs_have_filename == true ]]; then
-                echo "$files_to_compare"
+                echo "files_to_compare----- $files_to_compare"
               else
                 do_request_to_translate=true
                 echo "$subfile: Not all subdirectories have $filename"
