@@ -1,47 +1,6 @@
 require = require("esm")(module);
-
-const fs = require('fs');
-const path = require('path');
-
-const baseFolder = './src/i18n';
-const locales = ['ua', 'en', 'fr', 'ja']; // Add more locales if needed
-
-function compareFilesInLocales(localeIndex, fileIndex, files) {
-  if (fileIndex >= files.length) {
-    // Reached the end of files in the current locale
-    return;
-  }
-
-  const fileName = files[fileIndex];
-  const filePath = path.join(baseFolder, locales[localeIndex], fileName);
-  
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      console.error(`Error reading file: ${filePath}`);
-      return;
-    }
-
-    const file = JSON.parse(data);
-
-    try {
-      const differingKeys = compareKeys(files.map((file) => {
-        const fileData = fs.readFileSync(path.join(baseFolder, locales[localeIndex], file), 'utf8');
-        return JSON.parse(fileData);
-      }));
-
-      if (differingKeys === true) {
-        console.log(`All keys match in ${filePath}`);
-      } else {
-        console.log(`Differing keys found in ${filePath}:`);
-        console.log(differingKeys);
-      }
-    } catch (error) {
-      console.error(`Error comparing keys in ${filePath}:`, error);
-    }
-
-    compareFilesInLocales(localeIndex + 1, fileIndex, files);
-  });
-}
+const fs = require("fs");
+const path = require("path");
 
 function compareKeys(files) {
   console.log(files);
@@ -56,6 +15,7 @@ function compareKeys(files) {
 
     fileKeys.forEach((key) => {
       if (!keys[key]) {
+        keys[key] = [index];
       } else {
         keys[key].push(index);
       }
@@ -69,4 +29,28 @@ function compareKeys(files) {
   return differingKeys.length === 0 ? true : differingKeys.map(([key]) => key);
 }
 
-compareFilesInLocales(0, 0, fs.readdirSync(path.join(baseFolder, locales[0])));
+const directories = ["ua", "en", "fr"];
+
+directories.forEach((directory) => {
+  const directoryPath = path.join("./src/i18n", directory);
+  const filesToCompare = [];
+
+  // Read files from the current directory
+  fs.readdirSync(directoryPath).forEach((file) => {
+    if (file.endsWith(".js")) {
+      const filePath = path.join(directoryPath, file);
+      const fileContent = require(`./${filePath}`).default; // Assuming the files are valid JavaScript modules exporting objects
+      filesToCompare.push(fileContent);
+    }
+  });
+
+  // Compare files in the current directory
+  filesToCompare.forEach((file, index) => {
+    const fileName = path.basename(Object.keys(file)[0], ".js");
+    const differingKeys = compareKeys(
+      filesToCompare.filter((_, i) => i !== index)
+    );
+
+    console.log(`Differing keys in ${fileName}:`, differingKeys);
+  });
+});
