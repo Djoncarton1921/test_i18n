@@ -36,13 +36,13 @@ jobs:
                   fi
                 fi
               done
-              if [[ $all_subdirs_have_filename == true ]]; then
-                echo "$files_to_compare -----files_to_compare"
-              else
-                do_request_to_translate=true
-                echo "$subfile: Not all subdirectories have $filename"
-              fi
             done
+            if [[ $all_subdirs_have_filename == true ]]; then
+              echo "$files_to_compare -----files_to_compare"
+            else
+              do_request_to_translate=true
+              echo "$subfile: Not all subdirectories have $filename"
+            fi
             if [[ $do_request_to_translate == true ]]; then
               file_content=$(cat "$file")
               translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
