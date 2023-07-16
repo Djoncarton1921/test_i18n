@@ -30,18 +30,25 @@ function compareKeys(files) {
 }
 
 const directoryPath = "./src/i18n/ua";
-const filesToCompare = [];
+const otherDirectories = ["en", "fr"];
 
 // Read files from the 'ua' directory
 fs.readdirSync(directoryPath).forEach((file) => {
   if (file.endsWith(".js")) {
     const filePath = path.join(directoryPath, file);
     const fileContent = require(`./${filePath}`).default; // Assuming the files are valid JavaScript modules exporting objects
-    filesToCompare.push(fileContent);
+    const filesToCompareInDirectory = [fileContent]; // Store the file being compared within the current directory
+
+    // Compare files in the same directory
+    filesToCompareInDirectory.forEach((fileToCompare) => {
+      const differingKeys = compareKeys([
+        ...filesToCompareInDirectory,
+        fileToCompare,
+      ]);
+      console.log(`Differing keys in ${file}:`, differingKeys);
+    });
   }
 });
-
-const otherDirectories = ["en", "fr"];
 
 // Compare files in other directories
 otherDirectories.forEach((dir) => {
@@ -51,11 +58,7 @@ otherDirectories.forEach((dir) => {
     if (file.endsWith(".js")) {
       const filePath = path.join(otherDirectoryPath, file);
       const fileContent = require(`./${filePath}`).default;
-
-      const differingKeys = compareKeys(filesToCompare.map((fileToCompare) => ({
-        [fileToCompare]: fileToCompare,
-        [file]: fileContent,
-      })));
+      const differingKeys = compareKeys([fileContent]);
 
       console.log(`Differing keys in ${file}:`, differingKeys);
     }
