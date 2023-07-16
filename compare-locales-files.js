@@ -3,7 +3,6 @@ const fs = require("fs");
 const path = require("path");
 
 function compareKeys(files) {
-  console.log(files);
   if (files.length < 2) {
     throw new Error("At least two files are required for comparison");
   }
@@ -40,7 +39,10 @@ directories.forEach((directory) => {
     if (file.endsWith(".js")) {
       const filePath = path.join(directoryPath, file);
       const fileContent = require(`./${filePath}`).default; // Assuming the files are valid JavaScript modules exporting objects
-      filesToCompare.push(fileContent);
+      filesToCompare.push({
+        filePath: filePath,
+        fileContent: fileContent,
+      });
     }
   });
 
