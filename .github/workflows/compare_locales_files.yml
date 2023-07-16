@@ -1,23 +1,18 @@
-name: Compare locales
+name: I18n Changes
 
 on:
   push:
+    paths:
+      - "src/i18n/ua/**"
 
 jobs:
-  compare_js_files:
+  check-i18n-changes:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-
-      - name: Install dependencies
-        run: npm install esm
-
-      - name: Compare locales files
-        run: node compare-locales-files.js
+      - name: Print changed files
+        run: |
+          git diff --name-only HEAD^..HEAD -- src/i18n/ua/
