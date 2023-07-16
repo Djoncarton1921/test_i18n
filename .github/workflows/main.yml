@@ -23,7 +23,7 @@ jobs:
             filename=$(basename "$file")
             all_subdirs_have_filename=true
             echo $filename
-            
+
             for subfile in src/i18n/ua/*.js; do
               files_to_compare=()
               files_to_compare+=("$subfile")
@@ -35,7 +35,7 @@ jobs:
                     break
                   fi
                 files_to_compare+=("$subfile_in_subdir")
-              fi
+                fi
               done
               if [[ $all_subdirs_have_filename == true ]]; then
                 echo "$subfile: All subdirectories have $filename"
