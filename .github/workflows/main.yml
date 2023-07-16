@@ -36,6 +36,7 @@ jobs:
               done
             done
             if [[ $all_subdirs_have_filename == true ]]; then
+              echo "$files_to_compare ----------"
               npm i esm
               node compare-locales.js $files_to_compare
               files_to_compare=()
