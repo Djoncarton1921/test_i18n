@@ -52,7 +52,10 @@ jobs:
               npm i esm
               result=$(node compare-locales.js "${files_to_compare[@]}")
               status=$(echo "$result" | jq -r '.status')
-              echo "Статус: $status"
+              if [[ $status == "SUCCESS" ]]; then
+                do_request_to_translate=true
+                echo $do_request_to_translate
+              fi
               files_to_compare=()
             else
               do_request_to_translate=true
