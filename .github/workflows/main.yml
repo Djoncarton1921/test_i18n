@@ -73,7 +73,7 @@ jobs:
                 -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
                 -d "[
                   {
-                    "text": "Редагування повідомлення"
+                    \"text\": \"Редагування повідомлення\"
                   }
                 ]")
               target_lang=$(echo "$translated_text" | jq -r '.[0].translations[0].to')
