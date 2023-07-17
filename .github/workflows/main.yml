@@ -72,7 +72,9 @@ jobs:
             
               # Extract values from the file_content
               values=$(echo "$file_content" | grep -oE '".*"' | sed 's/"//g')
-          
+              
+              echo values
+
               # Create a new array with translated values
               translated_values=()
               for value in $values; do
@@ -83,7 +85,7 @@ jobs:
                 translated_value=$(echo "$translated_value" | jq -r '.[0].translations[0].text')
                 translated_values+=("$translated_value")
               done
-          
+
               # Replace the values in the file_content with translated values
               translated_file_content="$file_content"
               index=0
@@ -91,9 +93,9 @@ jobs:
                 translated_file_content=$(echo "$translated_file_content" | sed "s/\"$value\"/\"${translated_values[index]}\"/")
                 ((index++))
               done
-          
+
               echo "$translated_file_content"
-          
+
               target_lang=$(echo "$translated_file_content" | jq -r '.[0].translations[0].to')
               mkdir -p "src/i18n/$target_lang"
               echo "$translated_file_content" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
