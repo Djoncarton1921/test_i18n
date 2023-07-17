@@ -69,9 +69,12 @@ jobs:
             if [[ $do_request_to_translate == true ]]; then
               file_content=$(cat "$file")
               escaped_contents=$(echo "$file_content" | sed 's/"/\\"/g')
+          
+              # Extract values from the file_content
               values=$(echo "$file_content" | grep -oE '".*"' | sed 's/"//g')
               echo "$values"
-
+          
+              # Create a new array with translated values
               translated_values=()
               translate_data="["
               first_value=true
@@ -83,18 +86,18 @@ jobs:
                 first_value=false
               done
               translate_data+="]"
-
+          
               translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
                 -H "Content-Type: application/json" \
                 -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
                 -d "$translate_data")
-
+          
               for i in $(seq 0 $(($(echo "$translated_text" | jq '. | length') - 1))); do
                 translated_value=$(echo "$translated_text" | jq -r ".[$i].translations[0].text")
                 translated_values+=("$translated_value")
               done
               echo "${translated_values[*]}"
-
+          
               # Replace the values in the file_content with translated values
               translated_file_content="$file_content"
               index=0
@@ -103,9 +106,9 @@ jobs:
                 translated_file_content=$(echo "$translated_file_content" | sed "s|\"$value\"|\"$translated_value\"|")
                 ((index++))
               done
-
+          
               echo "$translated_file_content"
-
+          
               target_lang=$(echo "$translated_text" | jq -r '.[0].translations[0].to')
               mkdir -p "src/i18n/$target_lang"
               echo "$translated_file_content" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
