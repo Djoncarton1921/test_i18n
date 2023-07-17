@@ -2,5 +2,7 @@ export default {
   buttons: {
     set_admin: "Зробити адміном",
   },
-  efdfdfdfd: "dfffffffff",
+  actions: {
+    set_admin: "Зробити адміном",
+  },
 };
