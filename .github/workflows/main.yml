@@ -73,7 +73,7 @@ jobs:
               # Extract values from the file_content
               values=$(echo "$file_content" | grep -oE '".*"' | sed 's/"//g')
               
-              echo values
+              echo $values
 
               # Create a new array with translated values
               translated_values=()
@@ -85,6 +85,7 @@ jobs:
                 translated_value=$(echo "$translated_value" | jq -r '.[0].translations[0].text')
                 translated_values+=("$translated_value")
               done
+              echo $translated_values
 
               # Replace the values in the file_content with translated values
               translated_file_content="$file_content"
