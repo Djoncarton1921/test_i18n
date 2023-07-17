@@ -49,12 +49,16 @@ jobs:
             done
 
             if [[ $all_subdirs_have_filename == true ]]; then
-              npm i esm
-              result=$(node compare-locales.js "${files_to_compare[@]}")
-              status=$(echo "$result" | jq -r '.status')
-              if [[ $status == "SUCCESS" ]]; then
+              if (( ${#files_to_compare[@]} > 1 )); then
+                npm i esm
+                result=$(node compare-locales.js "${files_to_compare[@]}")
+                status=$(echo "$result" | jq -r '.status')
+                if [[ $status == "SUCCESS" ]]; then
+                  do_request_to_translate=true
+                  echo $do_request_to_translate
+                fi
+              else
                 do_request_to_translate=true
-                echo $do_request_to_translate
               fi
               files_to_compare=()
             else
