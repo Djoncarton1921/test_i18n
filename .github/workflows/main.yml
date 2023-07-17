@@ -64,11 +64,10 @@ jobs:
 
             if [[ $do_request_to_translate == true ]]; then
               file_content=$(cat "$file")
-              echo $langs
               translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
                 -H "Content-Type: application/json" \
                 -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
-                -d "[
+                - d "[
                   {
                     \"text\": \"$file_content\"
                   }
