@@ -1,3 +1,5 @@
 export default {
-  text: 'fdfdfddf'
-}
+  buttons: {
+    set_admin: 'Make admin',
+  },
+};
