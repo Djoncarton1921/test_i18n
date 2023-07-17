@@ -69,19 +69,34 @@ jobs:
             if [[ $do_request_to_translate == true ]]; then
               file_content=$(cat "$file")
               escaped_contents=$(echo "$file_content" | sed 's/"/\\"/g')
-
-              translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
-                -H "Content-Type: application/json" \
-                -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
-                -d "[
-                  {
-                    \"text\": \"$escaped_contents\"
-                  }
-                ]")
-              echo $translated_text
-              target_lang=$(echo "$translated_text" | jq -r '.[0].translations[0].to')
+            
+              # Extract values from the file_content
+              values=$(echo "$file_content" | grep -oE '".*"' | sed 's/"//g')
+          
+              # Create a new array with translated values
+              translated_values=()
+              for value in $values; do
+                translated_value=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=$langs" \
+                  -H "Content-Type: application/json" \
+                  -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
+                  -d "[{\"text\":\"$value\"}]")
+                translated_value=$(echo "$translated_value" | jq -r '.[0].translations[0].text')
+                translated_values+=("$translated_value")
+              done
+          
+              # Replace the values in the file_content with translated values
+              translated_file_content="$file_content"
+              index=0
+              for value in $values; do
+                translated_file_content=$(echo "$translated_file_content" | sed "s/\"$value\"/\"${translated_values[index]}\"/")
+                ((index++))
+              done
+          
+              echo "$translated_file_content"
+          
+              target_lang=$(echo "$translated_file_content" | jq -r '.[0].translations[0].to')
               mkdir -p "src/i18n/$target_lang"
-              echo "$translated_text" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
+              echo "$translated_file_content" | jq -r '.[0].translations[0].text' > "src/i18n/$target_lang/$filename"
             fi
           done
       - name: Commit files
