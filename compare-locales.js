@@ -34,14 +34,18 @@ const files = filePaths.map((filePath) => require(`./${filePath}`).default);
 const differingKeys = compareKeys(files);
 
 if (differingKeys === true) {
-  console.error({
-    status: "ERROR",
-    message: "No differences in locales were found",
-  });
+  console.error(
+    JSON.stringify({
+      status: "ERROR",
+      message: "No differences in locales were found",
+    })
+  );
 } else {
-  console.log({
-    status: "SUCCESS",
-    message:
-      "There are differences between locale files. Differences in the following keys: ${differingKeys}`",
-  });
+  console.log(
+    JSON.stringify({
+      status: "SUCCESS",
+      message:
+        "There are differences between locale files. Differences in the following keys: ${differingKeys}`",
+    })
+  );
 }
