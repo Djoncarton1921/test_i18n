@@ -68,13 +68,14 @@ jobs:
 
             if [[ $do_request_to_translate == true ]]; then
               file_content=$(cat "$file")
+              escaped_contents=$(echo "$file_content" | sed 's/"/\\"/g')
 
               translated_text=$(curl -s -X POST "https://blanball.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&from=uk&to=en" \
                 -H "Content-Type: application/json" \
                 -H "Ocp-Apim-Subscription-Key: a32cf006d7184a00bb73f23b5a9d154a" \
                 -d "[
                   {
-                    \"text\": \"$file_content\"
+                    \"text\": \"$escaped_contents\"
                   }
                 ]")
               echo $translated_text
